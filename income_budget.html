@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Income Budget</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body onload="loadContent()">
+
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top"  style="background-color: #008B8B;"> 
+        <a class="navbar-brand" href="#" style="color: white;"><b>PENABIL</b></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 800px;">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="dashboard.html"style="color: white;"><b> Dashboard </b><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="employee.html"style="color: white;">Employees</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="Absence.html"style="color: white;">Absence</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="payroll.html"style="color: white;">Payroll</a>
+              </li>
+          </ul>
+        </div>
+      </nav><br>
+    
+
+<center>
+<table id="table" class="table1">
+    <tr>
+        <th>Sender Name</th>
+        <th>Income Budget</th>
+        <th>Intended For</th>
+        <th>Date</th>
+    </tr>
+    <tr>
+        <td id="sendername-1"></td>
+        <td id="income-1"></td>
+        <td id="intended-1"></td>
+        <td id="date-1"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-2"></td>
+        <td id="income-2"></td>
+        <td id="intended-2"></td>
+        <td id="date-2"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-3"></td>
+        <td id="income-3"></td>
+        <td id="intended-3"></td>
+        <td id="date-3"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-4"></td>
+        <td id="income-4"></td>
+        <td id="intended-4"></td>
+        <td id="date-4"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-5"></td>
+        <td id="income-5"></td>
+        <td id="intended-5"></td>
+        <td id="date-5"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-6"></td>
+        <td id="income-6"></td>
+        <td id="intended-6"></td>
+        <td id="date-6"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-7"></td>
+        <td id="income-7"></td>
+        <td id="intended-7"></td>
+        <td id="date-7"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-8"></td>
+        <td id="income-8"></td>
+        <td id="intended-8"></td>
+        <td id="date-8"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-9"></td>
+        <td id="income-9"></td>
+        <td id="intended-9"></td>
+        <td id="date-9"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-10"></td>
+        <td id="income-10"></td>
+        <td id="intended-10"></td>
+        <td id="date-10"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-11"></td>
+        <td id="income-11"></td>
+        <td id="intended-11"></td>
+        <td id="date-11"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-12"></td>
+        <td id="income-12"></td>
+        <td id="intended-12"></td>
+        <td id="date-12"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-13"></td>
+        <td id="income-13"></td>
+        <td id="intended-13"></td>
+        <td id="date-13"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-14"></td>
+        <td id="income-14"></td>
+        <td id="intended-14"></td>
+        <td id="date-14"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-15"></td>
+        <td id="income-15"></td>
+        <td id="intended-15"></td>
+        <td id="date-15"> </td>
+    </tr>
+    <tr>
+        <td id="sendername-16"></td>
+        <td id="income-16"></td>
+        <td id="intended-16"></td>
+        <td id="date-16"> </td>
+    </tr>
+   
+</table>
+</center>
+
+</body>
+</html>
+
+<script>
+
+      var name;
+       function loadContent(){
+       	console.log("Sukses");
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/income-budget";
+            xhr.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    // document.getElementById("hasil").innerHTML = this.responseText;
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].sender_name;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#sendername-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].income_budget;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#income-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].intended_for;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#intended-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].date;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#date-'+(i+1)).html(name);
+                    }
+                }
+            }
+                xhr.open("GET", url, true);
+                xhr.send();
+            
+               };
+</script>

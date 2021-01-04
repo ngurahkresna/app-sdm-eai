@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body onload="loadContent()">
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top"  style="background-color: #008B8B;">
+    <a class="navbar-brand" href="#" style="color: white;"><b>PENABIL</b></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 800px;">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="dashboard.html"style="color: white;"><b> Dashboard </b><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="employee.html"style="color: white;">Employees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Absence.html"style="color: white;">Absence</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="payroll.html"style="color: white;">Payroll</a>
+            </li>
+        </ul>
+    </div>
+</nav><br>
+
+
+<button type="button" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#mydaftar"><a href="#"><span></span> Tambah pegawai </a></button><br><br>
+<form method="POST" onsubmit="return sendData()">
+    <script>
+        function postEmployee() {
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/employee";
+
+            var data = JSON.stringify({
+                first_name: document.getElementById("first_name").value,
+                last_name: document.getElementById("last_name").value,
+                address: document.getElementById("address").value,
+                phone: document.getElementById("phone").value,
+                gender: document.getElementById("gender").value,
+                category_id: document.getElementById("category_name1").value,
+                division_id: document.getElementById("division_name1").value,
+                status_id: document.getElementById("status_name1").value
+            });
+
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                console.log (this.responseText);
+            };
+            // console.log("chika"+document.getElementById("category_name1").value);
+            xhr.send(data);
+            return false;
+        }
+    </script>
+    <!-- Modal daftar -->
+    <div id="mydaftar" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                <div class="modal-body">
+                    <form>
+
+                        <div class="form-group">
+                            <label for="dropdownCategory">Category</label>
+                            <select class="form-control" id="category_name1">
+                                <option id="golongan1" value="1">Golongan 1</option>
+                                <option id="golongan2" value="2">Golongan 2</option>
+                                <option id="golongan3" value="3">Golongan 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dropdownDivision">Division</label>
+                            <select class="form-control" id="division_name1">
+                                <option id="sdm" value="1">SDM</option>
+                                <option id="procurement" value="2">Procurement</option>
+                                <option id="warehouse" value="3">Warehouse</option>
+                                <option id="finance" value="4">Finance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dropdownStatus">Status</label>
+                            <select class="form-control" id="status_name1">
+                                <option id="tetap" value="1">Pegawai Tetap</option>
+                                <option id="kontrak" value="2">Pegawai Kontrak</option>
+                                <option id="magang" value="3">Magang</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">First Name</label>
+                            <input type="email" class="form-control" id="first_name" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" placeholder="Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Address</label>
+                            <input type="text" class="form-control" id="address" placeholder="Address">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Phone</label>
+                            <input type="text" class="form-control" id="phone" placeholder="Phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Gender</label>
+                            <input type="text" class="form-control" id="gender" placeholder="Gender">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="postEmployee()">Tambah Pegawai</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- end modal daftar -->
+
+    <script>
+        var name;
+        function loadContent(){
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/employee";
+            xhr.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    // document.getElementById("hasil").innerHTML = this.responseText;
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].employee_id;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#employeeid-'+(i+1)).html(name);
+                    }
+
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].category.category_name;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#categoryid-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].division.division_name;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#divisionid-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].status.status_name;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#statusid-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].first_name;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#nama-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].last_name;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#lastname-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].address;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#address-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].phone;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#phone-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].gender;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#gender-'+(i+1)).html(name);
+                    }
+
+                }
+            };
+            xhr.open("GET", url, true);
+            xhr.send();
+
+        }
+    </script>
+    </div>
+    <br>
+
+    <center>
+        <table id="table" class="table1">
+            <tr>
+                <th>Employee ID</th>
+                <th>Category Name</th>
+                <th>Division Name</th>
+                <th>Status</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>Opsi</th>
+            </tr>
+
+            <!-- Row 1 -->
+
+            <tr>
+                <td id="employeeid-1"> </td>
+                <td id="categoryid-1"></td>
+                <td id="divisionid-1"></td>
+                <td id="statusid-1"></td>
+                <td id="nama-1"> </td>
+                <td id="lastname-1"> </td>
+                <td id="address-1"></td>
+                <td id="phone-1"></td>
+                <td id="gender-1"></td>
+
+                <td><button type="button" onclick="getContent()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putEmployee()">
+                        <script>
+                            var employee_id = 0;
+                            function getContent(){
+                                var id = document.getElementById("employeeid-1").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        employee_id = data.values[0].employee_id;
+                                        var category_id = data.values[0].category.category_id;
+                                        var categoryname = data.values[0].category.category_name;
+                                        var division_id = data.values[0].division.division_id;
+                                        var divisionname = data.values[0].division.division_name;
+                                        var status_id = data.values[0].status.status_id;
+                                        var statusname = data.values[0].status.status_name;
+                                        var firstname = data.values[0].first_name;
+                                        var lastname = data.values[0].last_name;
+                                        var address = data.values[0].address;
+                                        var phone = data.values[0].phone;
+                                        var gender = data.values[0].gender;
+
+
+                                        selectElement('categoryname', category_id);
+                                        selectElement('divisionname1', division_id);
+                                        selectElement('statusname1', status_id);
+                                        document.getElementById("first_name1").value = firstname;
+                                        document.getElementById("last_name1").value = lastname;
+                                        document.getElementById("address1").value = address;
+                                        document.getElementById("phone1").value = phone;
+                                        document.getElementById("gender1").value = gender;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function selectElement(id, valueToSelect) {
+                                let element = document.getElementById(id);
+                                element.value = valueToSelect;
+                            }
+
+                            function putEmployee() {
+                                var id = employee_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_id: document.getElementById("categoryname").value,
+                                    division_id: document.getElementById("divisionname1").value,
+                                    status_id: document.getElementById("statusname1").value,
+                                    first_name : document.getElementById("first_name1").value,
+                                    last_name: document.getElementById("last_name1").value,
+                                    address: document.getElementById("address1").value,
+                                    phone: document.getElementById("phone1").value,
+                                    gender: document.getElementById("gender1").value
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                // console.log("chika"+document.getElementById("dropdownCategory").value);
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteEmployee() {
+                                var id = document.getElementById("employeeid-1").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+                        <!-- Modal daftar -->
+                        <div id="update" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="dropdownCategory">Category</label>
+                                                <select class="form-control" id="categoryname">
+                                                    <option id="golongan1a" value="1">Golongan 1</option>
+                                                    <option id="golongan2a" value="2">Golongan 2</option>
+                                                    <option id="golongan3a" value="3">Golongan 3</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownDivision">Division</label>
+                                                <select class="form-control" id="divisionname1">
+                                                    <option id="sdma" value="1">SDM</option>
+                                                    <option id="procurementa" value="2">Procurement</option>
+                                                    <option id="warehousea" value="3">Warehouse</option>
+                                                    <option id="financea" value="4">Finance</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownStatus">Status</label>
+                                                <select class="form-control" id="statusname1">
+                                                    <option id="tetapa" value="1">Pegawai Tetap</option>
+                                                    <option id="kontraka" value="2">Pegawai Kontrak</option>
+                                                    <option id="maganga" value="3">Magang</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">First Name</label>
+                                                <input type="email" class="form-control" id="first_name1" placeholder="First Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Last Name</label>
+                                                <input type="text" class="form-control" id="last_name1" placeholder="Last Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Address</label>
+                                                <input type="text" class="form-control" id="address1" placeholder="Address">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Phone</label>
+                                                <input type="text" class="form-control" id="phone1" placeholder="Phone">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Gender</label>
+                                                <input type="text" class="form-control" id="gender1" placeholder="Gender">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putEmployee()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end modal daftar -->
+                        <button type="button" onclick = "deleteEmployee()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 2 -->
+
+            <tr>
+                <td id="employeeid-2"> </td>
+                <td id="categoryid-2"></td>
+                <td id="divisionid-2"></td>
+                <td id="statusid-2"></td>
+                <td id="nama-2"> </td>
+                <td id="lastname-2"> </td>
+                <td id="address-2"></td>
+                <td id="phone-2"></td>
+                <td id="gender-2"></td>
+
+                <td><button type="button" onclick="getContent1()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update1"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putEmployee1()">
+                        <script>
+                            var employee_id = 0;
+                            function getContent1(){
+                                var id = document.getElementById("employeeid-2").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        employee_id = data.values[0].employee_id;
+                                        var categoryid = data.values[0].category_id;
+                                        var divisionid = data.values[0].division_id;
+                                        var statusid = data.values[0].status_id;
+                                        var firstname = data.values[0].first_name;
+                                        var lastname = data.values[0].last_name;
+                                        var address = data.values[0].address;
+                                        var phone = data.values[0].phone;
+                                        var gender = data.values[0].gender;
+
+                                        selectElement('categoryname2', categoryid);
+                                        selectElement('divisionname2', divisionid);
+                                        selectElement('statusname2', statusid);
+                                        document.getElementById("first_name2").value = firstname;
+                                        document.getElementById("last_name2").value = lastname;
+                                        document.getElementById("address2").value = address;
+                                        document.getElementById("phone2").value = phone;
+                                        document.getElementById("gender2").value = gender;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putEmployee1() {
+                                var id = employee_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_id: document.getElementById("categoryname2").value,
+                                    division_id: document.getElementById("divisionname2").value,
+                                    status_id: document.getElementById("statusname2").value,
+                                    first_name : document.getElementById("first_name2").value,
+                                    last_name: document.getElementById("last_name2").value,
+                                    address: document.getElementById("address2").value,
+                                    phone: document.getElementById("phone2").value,
+                                    gender: document.getElementById("gender2").value
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteEmployee1() {
+                                var id = document.getElementById("employeeid-2").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+                        <!-- Modal daftar -->
+                        <div id="update1" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="dropdownCategory">Category</label>
+                                                <select class="form-control" id="categoryname2">
+                                                    <option id="golongan1b" value="1">Golongan 1</option>
+                                                    <option id="golongan2b" value="2">Golongan 2</option>
+                                                    <option id="golongan3b" value="3">Golongan 3</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownDivision">Division</label>
+                                                <select class="form-control" id="divisionname2">
+                                                    <option id="sdmb" value="1">SDM</option>
+                                                    <option id="procurementb" value="2">Procurement</option>
+                                                    <option id="warehouseb" value="3">Warehouse</option>
+                                                    <option id="financeb" value="4">Finance</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownStatus">Status</label>
+                                                <select class="form-control" id="statusname2">
+                                                    <option id="tetapb" value="1">Pegawai Tetap</option>
+                                                    <option id="kontrakb" value="2">Pegawai Kontrak</option>
+                                                    <option id="magangb" value="3">Magang</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">First Name</label>
+                                                <input type="email" class="form-control" id="first_name2" placeholder="First Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Last Name</label>
+                                                <input type="text" class="form-control" id="last_name2" placeholder="Last Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Address</label>
+                                                <input type="text" class="form-control" id="address2" placeholder="Address">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Phone</label>
+                                                <input type="text" class="form-control" id="phone2" placeholder="Phone">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Gender</label>
+                                                <input type="text" class="form-control" id="gender2" placeholder="Gender">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putEmployee1()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end modal daftar -->
+                        <button type="button" onclick = "deleteEmployee1()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 3 -->
+
+            <tr>
+                <td id="employeeid-3"> </td>
+                <td id="categoryid-3"></td>
+                <td id="divisionid-3"></td>
+                <td id="statusid-3"></td>
+                <td id="nama-3"> </td>
+                <td id="lastname-3"> </td>
+                <td id="address-3"></td>
+                <td id="phone-3"></td>
+                <td id="gender-3"></td>
+
+                <td><button type="button" onclick="getContent2()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update2"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putEmployee2()">
+                        <script>
+                            var employee_id = 0;
+                            function getContent2(){
+                                var id = document.getElementById("employeeid-3").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        employee_id = data.values[0].employee_id;
+                                        var categoryid = data.values[0].category_id;
+                                        var divisionid = data.values[0].division_id;
+                                        var statusid = data.values[0].status_id;
+                                        var firstname = data.values[0].first_name;
+                                        var lastname = data.values[0].last_name;
+                                        var address = data.values[0].address;
+                                        var phone = data.values[0].phone;
+                                        var gender = data.values[0].gender;
+
+                                        selectElement('categoryname3', categoryid);
+                                        selectElement('divisionname3', divisionid);
+                                        selectElement('statusname3', statusid);
+                                        document.getElementById("first_name3").value = firstname;
+                                        document.getElementById("last_name3").value = lastname;
+                                        document.getElementById("address3").value = address;
+                                        document.getElementById("phone3").value = phone;
+                                        document.getElementById("gender3").value = gender;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putEmployee2() {
+                                var id = employee_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_id: document.getElementById("categoryname3").value,
+                                    division_id: document.getElementById("divisionname3").value,
+                                    status_id: document.getElementById("statusname3").value,
+                                    first_name : document.getElementById("first_name3").value,
+                                    last_name: document.getElementById("last_name3").value,
+                                    address: document.getElementById("address3").value,
+                                    phone: document.getElementById("phone3").value,
+                                    gender: document.getElementById("gender3").value
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteEmployee2() {
+                                var id = document.getElementById("employeeid-3").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+                        <!-- Modal daftar -->
+                        <div id="update2" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="dropdownCategory">Category</label>
+                                                <select class="form-control" id="categoryname3">
+                                                    <option id="golongan1c" value="1">Golongan 1</option>
+                                                    <option id="golongan2c" value="2">Golongan 2</option>
+                                                    <option id="golongan3c" value="3">Golongan 3</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownDivision">Division</label>
+                                                <select class="form-control" id="divisionname3">
+                                                    <option id="sdmc" value="1">SDM</option>
+                                                    <option id="procurementc" value="2">Procurement</option>
+                                                    <option id="warehousec" value="3">Warehouse</option>
+                                                    <option id="financec" value="4">Finance</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownStatus">Status</label>
+                                                <select class="form-control" id="statusname3">
+                                                    <option id="tetapc" value="1">Pegawai Tetap</option>
+                                                    <option id="kontrakc" value="2">Pegawai Kontrak</option>
+                                                    <option id="magangc" value="3">Magang</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">First Name</label>
+                                                <input type="email" class="form-control" id="first_name3" placeholder="First Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Last Name</label>
+                                                <input type="text" class="form-control" id="last_name3" placeholder="Last Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Address</label>
+                                                <input type="text" class="form-control" id="address3" placeholder="Address">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Phone</label>
+                                                <input type="text" class="form-control" id="phone3" placeholder="Phone">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Gender</label>
+                                                <input type="text" class="form-control" id="gender3" placeholder="Gender">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putEmployee2()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end modal daftar -->
+                        <button type="button" onclick = "deleteEmployee2()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 4 -->
+
+            <tr>
+                <td id="employeeid-4"> </td>
+                <td id="categoryid-4"></td>
+                <td id="divisionid-4"></td>
+                <td id="statusid-4"></td>
+                <td id="nama-4"> </td>
+                <td id="lastname-4"> </td>
+                <td id="address-4"></td>
+                <td id="phone-4"></td>
+                <td id="gender-4"></td>
+
+                <td><button type="button" onclick="getContent3()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update3"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putEmployee3()">
+                        <script>
+                            var employee_id = 0;
+                            function getContent3(){
+                                var id = document.getElementById("employeeid-4").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        employee_id = data.values[0].employee_id;
+                                        var categoryid = data.values[0].category_id;
+                                        var divisionid = data.values[0].division_id;
+                                        var statusid = data.values[0].status_id;
+                                        var firstname = data.values[0].first_name;
+                                        var lastname = data.values[0].last_name;
+                                        var address = data.values[0].address;
+                                        var phone = data.values[0].phone;
+                                        var gender = data.values[0].gender;
+
+                                        selectElement('categoryname4', categoryid);
+                                        selectElement('divisionname4', divisionid);
+                                        selectElement('statusname4', statusid);
+                                        document.getElementById("first_name4").value = firstname;
+                                        document.getElementById("last_name4").value = lastname;
+                                        document.getElementById("address4").value = address;
+                                        document.getElementById("phone4").value = phone;
+                                        document.getElementById("gender4").value = gender;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putEmployee3() {
+                                var id = employee_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_id: document.getElementById("categoryname4").value,
+                                    division_id: document.getElementById("divisionname4").value,
+                                    status_id: document.getElementById("statusname4").value,
+                                    first_name : document.getElementById("first_name4").value,
+                                    last_name: document.getElementById("last_name4").value,
+                                    address: document.getElementById("address4").value,
+                                    phone: document.getElementById("phone4").value,
+                                    gender: document.getElementById("gender4").value
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteEmployee3() {
+                                var id = document.getElementById("employeeid-4").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+                        <!-- Modal daftar -->
+                        <div id="update3" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="dropdownCategory">Category</label>
+                                                <select class="form-control" id="categoryname4">
+                                                    <option id="golongan1d" value="1">Golongan 1</option>
+                                                    <option id="golongan2d" value="2">Golongan 2</option>
+                                                    <option id="golongan3d" value="3">Golongan 3</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownDivision">Division</label>
+                                                <select class="form-control" id="divisionname4">
+                                                    <option id="sdmd" value="1">SDM</option>
+                                                    <option id="procurementd" value="2">Procurement</option>
+                                                    <option id="warehoused" value="3">Warehouse</option>
+                                                    <option id="financed" value="4">Finance</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownStatus">Status</label>
+                                                <select class="form-control" id="statusname4">
+                                                    <option id="tetapd" value="1">Pegawai Tetap</option>
+                                                    <option id="kontrakd" value="2">Pegawai Kontrak</option>
+                                                    <option id="magangd" value="3">Magang</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">First Name</label>
+                                                <input type="email" class="form-control" id="first_name4" placeholder="First Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Last Name</label>
+                                                <input type="text" class="form-control" id="last_name4" placeholder="Last Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Address</label>
+                                                <input type="text" class="form-control" id="address4" placeholder="Address">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Phone</label>
+                                                <input type="text" class="form-control" id="phone4" placeholder="Phone">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Gender</label>
+                                                <input type="text" class="form-control" id="gender4" placeholder="Gender">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putEmployee3()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end modal daftar -->
+                        <button type="button" onclick = "deleteEmployee3()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 5 -->
+
+            <tr>
+                <td id="employeeid-5"> </td>
+                <td id="categoryid-5"></td>
+                <td id="divisionid-5"></td>
+                <td id="statusid-5"></td>
+                <td id="nama-5"> </td>
+                <td id="lastname-5"> </td>
+                <td id="address-5"></td>
+                <td id="phone-5"></td>
+                <td id="gender-5"></td>
+
+                <td><button type="button" onclick="getContent4()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update4"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putEmployee4()">
+                        <script>
+                            var employee_id = 0;
+                            function getContent4(){
+                                var id = document.getElementById("employeeid-5").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        employee_id = data.values[0].employee_id;
+                                        var categoryid = data.values[0].category_id;
+                                        var divisionid = data.values[0].division_id;
+                                        var statusid = data.values[0].status_id;
+                                        var firstname = data.values[0].first_name;
+                                        var lastname = data.values[0].last_name;
+                                        var address = data.values[0].address;
+                                        var phone = data.values[0].phone;
+                                        var gender = data.values[0].gender;
+
+                                        selectElement('categoryname5', categoryid);
+                                        selectElement('divisionname5', divisionid);
+                                        selectElement('statusname5', statusid);
+                                        document.getElementById("first_name5").value = firstname;
+                                        document.getElementById("last_name5").value = lastname;
+                                        document.getElementById("address5").value = address;
+                                        document.getElementById("phone5").value = phone;
+                                        document.getElementById("gender5").value = gender;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putEmployee4() {
+                                var id = employee_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_id: document.getElementById("categoryname5").value,
+                                    division_id: document.getElementById("divisionname5").value,
+                                    status_id: document.getElementById("statusname5").value,
+                                    first_name : document.getElementById("first_name5").value,
+                                    last_name: document.getElementById("last_name5").value,
+                                    address: document.getElementById("address5").value,
+                                    phone: document.getElementById("phone5").value,
+                                    gender: document.getElementById("gender5").value
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteEmployee4() {
+                                var id = document.getElementById("employeeid-5").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/employee-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+                        <!-- Modal daftar -->
+                        <div id="update4" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="dropdownCategory">Category</label>
+                                                <select class="form-control" id="categoryname5">
+                                                    <option id="golongan1e" value="1">Golongan 1</option>
+                                                    <option id="golongan2e" value="2">Golongan 2</option>
+                                                    <option id="golongan3e" value="3">Golongan 3</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownDivision">Division</label>
+                                                <select class="form-control" id="divisionname5">
+                                                    <option id="sdme" value="1">SDM</option>
+                                                    <option id="procuremente" value="2">Procurement</option>
+                                                    <option id="warehousee" value="3">Warehouse</option>
+                                                    <option id="financee" value="4">Finance</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dropdownStatus">Status</label>
+                                                <select class="form-control" id="statusname5">
+                                                    <option id="tetape" value="1">Pegawai Tetap</option>
+                                                    <option id="kontrake" value="2">Pegawai Kontrak</option>
+                                                    <option id="magange" value="3">Magang</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">First Name</label>
+                                                <input type="email" class="form-control" id="first_name5" placeholder="First Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Last Name</label>
+                                                <input type="text" class="form-control" id="last_name5" placeholder="Last Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Address</label>
+                                                <input type="text" class="form-control" id="address5" placeholder="Address">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Phone</label>
+                                                <input type="text" class="form-control" id="phone5" placeholder="Phone">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Gender</label>
+                                                <input type="text" class="form-control" id="gender5" placeholder="Gender">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putEmployee4()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end modal daftar -->
+                        <button type="button" onclick = "deleteEmployee4()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+        </table>
+    </center>
+
+</body>
+</html>

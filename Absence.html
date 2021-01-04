@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Absence</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body onload="loadContent()">
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top"  style="background-color: #008B8B;">
+    <a class="navbar-brand" href="#" style="color: white;"><b>PENABIL</b></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 800px;">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="dashboard.html"style="color: white;"><b> Dashboard </b><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="employee.html"style="color: white;">Employees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Absence.html"style="color: white;">Absence</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="payroll.html"style="color: white;">Payroll</a>
+            </li>
+        </ul>
+    </div>
+</nav><br>
+
+
+<button type="button" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#mydaftar"><a href="#"><span></span>Add Absence</a></button><br><br>
+<form method="POST" onsubmit="return sendData()">
+    <script>
+        function postPresence() {
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/presence";
+
+            var data = JSON.stringify({
+                employee_id: document.getElementById("employee_id").value,
+                total_attandance: document.getElementById("total_attandance").value,
+                total_absen: document.getElementById("total_absen").value,
+                total_overtime : document.getElementById("total_overtime").value,
+                presence_date: document.getElementById("presence_date").value
+            });
+
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                console.log (this.responseText);
+            };
+
+            xhr.send(data);
+            return false;
+        }
+    </script>
+    <!-- Modal daftar -->
+    <div id="mydaftar" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Employee ID</label>
+                            <input type="text" class="form-control" id="employee_id" placeholder="Employee ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Total Attandance</label>
+                            <input type="text" class="form-control" id="total_attandance" placeholder="Total Attandance">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Total Absen</label>
+                            <input type="text" class="form-control" id="total_absen" placeholder="Total Absen">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Total Overtime</label>
+                            <input type="email" class="form-control" id="total_overtime" placeholder="Total Overtime">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Presence Date</label>
+                            <input type="text" class="form-control" id="presence_date" placeholder="Presence Date">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="postPresence()">Tambah Kehadiran</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal daftar -->
+
+    <script>
+        function loadContent(){
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/presence";
+            xhr.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    // document.getElementById("hasil").innerHTML = this.responseText;
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].presence_id;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#presenceid-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        fname = data.data[i].employee.first_name;
+                        lname = data.data[i].employee.last_name;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#employeeid-'+(i+1)).html(fname + " " +lname);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].total_attandance;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#totalattandance-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].total_absen;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#totalabsen-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].total_overtime;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#totalovertime-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].presence_date;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#date-'+(i+1)).html(name);
+                    }
+                }
+            };
+            xhr.open("GET", url, true);
+            xhr.send();
+        }
+    </script>
+    </div>
+    <br>
+
+    <center>
+        <table id="table" class="table1">
+            <tr>
+                <th>Presence ID</th>
+                <th>Employee Name</th>
+                <th>Total Attandance</th>
+                <th>Total Absen</th>
+                <th>Total Overtime</th>
+                <th>Presence Date</th>
+                <th>Opsi</th>
+            </tr>
+
+            <!-- row 1 -->
+            <tr>
+
+                <td id="presenceid-1"></td>
+                <td id="employeeid-1"></td>
+                <td id="totalattandance-1"></td>
+                <td id="totalabsen-1"></td>
+                <td id="totalovertime-1"></td>
+                <td id="date-1"></td>
+
+                <td><button type="button" onclick="getContent()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putAbsence()">
+                        <script>
+                            var presence_id = 0;
+                            var employee_id = 0;
+                            function getContent(){
+                                var id = document.getElementById("presenceid-1").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        presence_id = data.values[0].presence_id;
+                                        var fname = data.values[0].employee.first_name;
+                                        var lname = data.values[0].employee.last_name;
+                                        var employee_name = fname + " " + lname;
+                                        employee_id = data.values[0].employee_id;
+                                        var totalattandance = data.values[0].total_attandance;
+                                        var totalabsen = data.values[0].total_absen;
+                                        var totalovertime = data.values[0].total_overtime;
+                                        var date = data.values[0].presence_date;
+
+                                        document.getElementById("employee_name1").value = employee_name;
+                                        document.getElementById("total_attandance1").value = totalattandance;
+                                        document.getElementById("total_absen1").value = totalabsen;
+                                        document.getElementById("total_overtime1").value = totalovertime;
+                                        document.getElementById("presence_date1").value = date;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putAbsence() {
+                                var id = presence_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-update/"+id;
+
+                                var data = JSON.stringify({
+                                    employee_id: employee_id,
+                                    total_attandance: document.getElementById("total_attandance1").value,
+                                    total_absen : document.getElementById("total_absen1").value,
+                                    total_overtime : document.getElementById("total_overtime1").value,
+                                    presence_date : document.getElementById("presence_date1").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteAbsence() {
+                                var id = document.getElementById("presenceid-1").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="update" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Employee Name</label>
+                                                <input type="text" class="form-control" id="employee_name1" placeholder="Employee ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Attandance</label>
+                                                <input type="text" class="form-control" id="total_attandance1" placeholder="Total Attandance">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Absen</label>
+                                                <input type="text" class="form-control" id="total_absen1" placeholder="Total Absen">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Overtime</label>
+                                                <input type="email" class="form-control" id="total_overtime1" placeholder="Total Overtime">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Presence Date</label>
+                                                <input type="text" class="form-control" id="presence_date1" placeholder="Presence Date">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putAbsence()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteAbsence()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- row 2 -->
+            <tr>
+
+                <td id="presenceid-2"></td>
+                <td id="employeeid-2"></td>
+                <td id="totalattandance-2"></td>
+                <td id="totalabsen-2"></td>
+                <td id="totalovertime-2"></td>
+                <td id="date-2"></td>
+
+                <td><button type="button" onclick="getContent1()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update1"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putAbsence1()">
+                        <script>
+                            var presence_id = 0;
+                            var employee_id = 0;
+                            function getContent1(){
+                                var id = document.getElementById("presenceid-2").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        presence_id = data.values[0].presence_id;
+                                        var fname = data.values[0].employee.first_name;
+                                        var lname = data.values[0].employee.last_name;
+                                        var employee_name = fname + " " + lname;
+                                        employee_id = data.values[0].employee_id;
+                                        var totalattandance = data.values[0].total_attandance;
+                                        var totalabsen = data.values[0].total_absen;
+                                        var totalovertime = data.values[0].total_overtime;
+                                        var date = data.values[0].presence_date;
+
+                                        document.getElementById("employee_name2").value = employee_name;
+                                        document.getElementById("total_attandance2").value = totalattandance;
+                                        document.getElementById("total_absen2").value = totalabsen;
+                                        document.getElementById("total_overtime2").value = totalovertime;
+                                        document.getElementById("presence_date2").value = date;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putAbsence1() {
+                                var id = presence_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-update/"+id;
+
+                                var data = JSON.stringify({
+                                    employee_id: employee_id,
+                                    total_attandance: document.getElementById("total_attandance2").value,
+                                    total_absen : document.getElementById("total_absen2").value,
+                                    total_overtime : document.getElementById("total_overtime2").value,
+                                    presence_date : document.getElementById("presence_date2").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteAbsence1() {
+                                var id = document.getElementById("presenceid-2").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="update1" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Employee Name</label>
+                                                <input type="text" class="form-control" id="employee_name2" placeholder="Employee ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Attandance</label>
+                                                <input type="text" class="form-control" id="total_attandance2" placeholder="Total Attandance">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Absen</label>
+                                                <input type="text" class="form-control" id="total_absen2" placeholder="Total Absen">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Overtime</label>
+                                                <input type="email" class="form-control" id="total_overtime2" placeholder="Total Overtime">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Presence Date</label>
+                                                <input type="text" class="form-control" id="presence_date2" placeholder="Presence Date">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putAbsence1()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteAbsence1()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- row 3 -->
+            <tr>
+
+                <td id="presenceid-3"></td>
+                <td id="employeeid-3"></td>
+                <td id="totalattandance-3"></td>
+                <td id="totalabsen-3"></td>
+                <td id="totalovertime-3"></td>
+                <td id="date-3"></td>
+
+                <td><button type="button" onclick="getContent2()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update2"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putAbsence2()">
+                        <script>
+                            var presence_id = 0;
+                            var employee_id = 0;
+                            function getContent2(){
+                                var id = document.getElementById("presenceid-3").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        presence_id = data.values[0].presence_id;
+                                        var fname = data.values[0].employee.first_name;
+                                        var lname = data.values[0].employee.last_name;
+                                        var employee_name = fname + " " + lname;
+                                        employee_id = data.values[0].employee_id;
+                                        var totalattandance = data.values[0].total_attandance;
+                                        var totalabsen = data.values[0].total_absen;
+                                        var totalovertime = data.values[0].total_overtime;
+                                        var date = data.values[0].presence_date;
+
+                                        document.getElementById("employee_name3").value = employee_name;
+                                        document.getElementById("total_attandance3").value = totalattandance;
+                                        document.getElementById("total_absen3").value = totalabsen;
+                                        document.getElementById("total_overtime3").value = totalovertime;
+                                        document.getElementById("presence_date3").value = date;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putAbsence2() {
+                                var id = presence_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-update/"+id;
+
+                                var data = JSON.stringify({
+                                    employee_id: employee_id,
+                                    total_attandance: document.getElementById("total_attandance3").value,
+                                    total_absen : document.getElementById("total_absen3").value,
+                                    total_overtime : document.getElementById("total_overtime3").value,
+                                    presence_date : document.getElementById("presence_date3").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteAbsence2() {
+                                var id = document.getElementById("presenceid-3").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="update2" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Employee Name</label>
+                                                <input type="text" class="form-control" id="employee_name3" placeholder="Employee ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Attandance</label>
+                                                <input type="text" class="form-control" id="total_attandance3" placeholder="Total Attandance">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Absen</label>
+                                                <input type="text" class="form-control" id="total_absen3" placeholder="Total Absen">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Overtime</label>
+                                                <input type="email" class="form-control" id="total_overtime3" placeholder="Total Overtime">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Presence Date</label>
+                                                <input type="text" class="form-control" id="presence_date3" placeholder="Presence Date">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putAbsence2()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteAbsence2()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- row 4-->
+            <tr>
+
+                <td id="presenceid-4"></td>
+                <td id="employeeid-4"></td>
+                <td id="totalattandance-4"></td>
+                <td id="totalabsen-4"></td>
+                <td id="totalovertime-4"></td>
+                <td id="date-4"></td>
+
+                <td><button type="button" onclick="getContent3()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update3"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putAbsence3()">
+                        <script>
+                            var presence_id = 0;
+                            var employee_id = 0;
+                            function getContent3(){
+                                var id = document.getElementById("presenceid-4").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        presence_id = data.values[0].presence_id;
+                                        var fname = data.values[0].employee.first_name;
+                                        var lname = data.values[0].employee.last_name;
+                                        var employee_name = fname + " " + lname;
+                                        console.log("lol"+employee_name);
+                                        employee_id = data.values[0].employee_id;
+                                        var totalattandance = data.values[0].total_attandance;
+                                        var totalabsen = data.values[0].total_absen;
+                                        var totalovertime = data.values[0].total_overtime;
+                                        var date = data.values[0].presence_date;
+
+                                        document.getElementById("employee_name4").value = employee_name;
+                                        document.getElementById("total_attandance4").value = totalattandance;
+                                        document.getElementById("total_absen4").value = totalabsen;
+                                        document.getElementById("total_overtime4").value = totalovertime;
+                                        document.getElementById("presence_date4").value = date;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putAbsence3() {
+                                var id = presence_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-update/"+id;
+
+                                var data = JSON.stringify({
+                                    employee_id: employee_id,
+                                    total_attandance: document.getElementById("total_attandance4").value,
+                                    total_absen : document.getElementById("total_absen4").value,
+                                    total_overtime : document.getElementById("total_overtime4").value,
+                                    presence_date : document.getElementById("presence_date4").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+
+                            function deleteAbsence3() {
+                                var id = document.getElementById("presenceid-4").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="update3" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Employee Name</label>
+                                                <input type="text" class="form-control" id="employee_name4" placeholder="Employee ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Attandance</label>
+                                                <input type="text" class="form-control" id="total_attandance4" placeholder="Total Attandance">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Absen</label>
+                                                <input type="text" class="form-control" id="total_absen4" placeholder="Total Absen">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Overtime</label>
+                                                <input type="email" class="form-control" id="total_overtime4" placeholder="Total Overtime">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Presence Date</label>
+                                                <input type="text" class="form-control" id="presence_date4" placeholder="Presence Date">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putAbsence3()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteAbsence3()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- row 5-->
+            <tr>
+
+                <td id="presenceid-5"></td>
+                <td id="employeeid-5"></td>
+                <td id="totalattandance-5"></td>
+                <td id="totalabsen-5"></td>
+                <td id="totalovertime-5"></td>
+                <td id="date-5"></td>
+
+                <td><button type="button" onclick="getContent4()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update4"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putAbsence4()">
+                        <script>
+                            var presence_id = 0;
+                            var employee_id = 0;
+                            function getContent4(){
+                                var id = document.getElementById("presenceid-5").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        presence_id = data.values[0].presence_id;
+                                        var fname = data.values[0].employee.first_name;
+                                        var lname = data.values[0].employee.last_name;
+                                        var employee_name = fname + " " + lname;
+                                        employee_id = data.values[0].employee_id;
+                                        var totalattandance = data.values[0].total_attandance;
+                                        var totalabsen = data.values[0].total_absen;
+                                        var totalovertime = data.values[0].total_overtime;
+                                        var date = data.values[0].presence_date;
+
+                                        document.getElementById("employee_name5").value = employee_name;
+                                        document.getElementById("total_attandance5").value = totalattandance;
+                                        document.getElementById("total_absen5").value = totalabsen;
+                                        document.getElementById("total_overtime5").value = totalovertime;
+                                        document.getElementById("presence_date5").value = date;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putAbsence4() {
+                                var id = presence_id;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-update/"+id;
+
+                                var data = JSON.stringify({
+                                    employee_id: employee_id,
+                                    total_attandance: document.getElementById("total_attandance5").value,
+                                    total_absen : document.getElementById("total_absen5").value,
+                                    total_overtime : document.getElementById("total_overtime5").value,
+                                    presence_date : document.getElementById("presence_date4").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+
+                            function deleteAbsence4() {
+                                var id = document.getElementById("presenceid-5").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="update4" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Employee Name</label>
+                                                <input type="text" class="form-control" id="employee_name5" placeholder="Employee ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Attandance</label>
+                                                <input type="text" class="form-control" id="total_attandance5" placeholder="Total Attandance">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Absen</label>
+                                                <input type="text" class="form-control" id="total_absen5" placeholder="Total Absen">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Overtime</label>
+                                                <input type="email" class="form-control" id="total_overtime5" placeholder="Total Overtime">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Presence Date</label>
+                                                <input type="text" class="form-control" id="presence_date5" placeholder="Presence Date">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putAbsence4()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteAbsence4()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- row 6-->
+            <tr>
+
+                <td id="presenceid-6"></td>
+                <td id="employeeid-6"></td>
+                <td id="totalattandance-6"></td>
+                <td id="totalabsen-6"></td>
+                <td id="totalovertime-6"></td>
+                <td id="date-6"></td>
+
+                <td><button type="button" onclick="getContent5()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update5"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putAbsence5()">
+                        <script>
+                            function getContent5(){
+                                var id = document.getElementById("presenceid-6").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        var presenceid = data.values[0].presence_id;
+                                        var employeeid = data.values[0].employee_id;
+                                        var totalattandance = data.values[0].total_attandance;
+                                        var totalabsen = data.values[0].total_absen;
+                                        var totalovertime = data.values[0].total_overtime;
+                                        var date = data.values[0].presence_date;
+
+                                        document.getElementById("presence_id6").value = presenceid;
+                                        document.getElementById("employee_id6").value = employeeid;
+                                        document.getElementById("total_attandance6").value = totalattandance;
+                                        document.getElementById("total_absen6").value = totalabsen;
+                                        document.getElementById("total_overtime6").value = totalovertime;
+                                        document.getElementById("presence_date6").value = date;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putAbsence5() {
+                                var id = document.getElementById("presence_id6").value;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-update/"+id;
+
+                                var data = JSON.stringify({
+                                    employee_id: document.getElementById("employee_id6").value,
+                                    total_attandance: document.getElementById("total_attandance6").value,
+                                    total_absen : document.getElementById("total_absen6").value,
+                                    total_overtime : document.getElementById("total_overtime6").value,
+                                    presence_date : document.getElementById("presence_date6").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteAbsence5() {
+                                var id = document.getElementById("presenceid-4").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/presence-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="update5" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Presence ID</label>
+                                                <input type="text" class="form-control" id="presence_id6" placeholder="Presence ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Employee ID</label>
+                                                <input type="text" class="form-control" id="employee_id6" placeholder="Employee ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Attandance</label>
+                                                <input type="text" class="form-control" id="total_attandance6" placeholder="Total Attandance">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Absen</label>
+                                                <input type="text" class="form-control" id="total_absen6" placeholder="Total Absen">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Total Overtime</label>
+                                                <input type="email" class="form-control" id="total_overtime6" placeholder="Total Overtime">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Presence Date</label>
+                                                <input type="text" class="form-control" id="presence_date6" placeholder="Presence Date">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putAbsence5()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteAbsence5()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+        </table>
+    </center>
+
+</body>
+</html>

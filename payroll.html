@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payroll</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #008B8B;">
+    <a class="navbar-brand" href="#" style="color: white;"><b>PENABIL</b></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 800px;">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="dashboard.html" style="color: white;"><b> Dashboard </b><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="employee.html" style="color: white;">Employees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Absence.html" style="color: white;">Absence</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="payroll.html" style="color: white;">Payroll</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<button type="button" class="btn btn-light" data-toggle="modal" data-target="#payrollModals" style="margin-left: 32px">
+    Count Sallary
+</button>
+
+<div class="d-flex justify-content-center">
+
+    <table id="tablePayroll" class="table1 mt-5">
+        <thead>
+        <tr>
+            <th>Payroll ID</th>
+            <th>Employee Name</th>
+            <th>Total Attandance</th>
+            <th>Total Absence</th>
+            <th>Total Overtime</th>
+            <th>Category</th>
+            <th>Salary</th>
+            <th>Report Date</th>
+            <th>Opsi</th>
+        </tr>
+        </thead>
+        <tbody id="payrollList"></tbody>
+    </table>
+
+</div>
+
+<div id="payrollModals" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Employee ID</label>
+                        <div class="d-flex">
+                            <div class="mr-auto p-2">
+                                <input type="text" class="form-control" id="field_employee_id" placeholder="Employee ID"
+                                       style="width: 372px">
+                            </div>
+                            <div class="p-2">
+                                <button type="button" class="btn btn-light" onclick="countPayroll()">
+                                    Count
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Employee Name</label>
+                        <input type="text" class="form-control" id="field_employee_name" placeholder="Name" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Salary</label>
+                        <input type="text" class="form-control" id="field_sallary" placeholder="Salary">
+                    </div>
+                    <div class="form-group">
+                        <label>Report Date </label>
+                        <input type="text" class="form-control" id="field_report_date" placeholder="Report Date">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btnSubmit" type="button" class="btn btn-success" data-dismiss="modal"
+                        onclick="postPayroll()">Create Report
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var presence_id = null;
+    var category_id = null;
+
+    function loadContent() {
+        var xhr = new XMLHttpRequest();
+        var url = "https://penabil-api.herokuapp.com/api/payroll";
+        xhr.onreadystatechange = function () {
+            let payrollList = document.querySelector("#payrollList");
+            payrollList.innerHTML = "";
+            if (this.readyState == 4 && this.status == 200) {
+                var data = JSON.parse(this.responseText);
+
+                for (var i = 0; i < data.data.length; i++) {
+                    let row = document.createElement('tr');
+
+                    payroll_id = data.data[i].payroll_id;
+                    row.innerHTML = "<td id='payroll_id' + payroll_id>" + payroll_id + "</td>";
+
+                    employee_fname = data.data[i].employee.first_name;
+                    employee_lname = data.data[i].employee.last_name;
+                    row.innerHTML += "<td>" + employee_fname + " " + employee_lname + "</td>";
+
+                    total_attandance = data.data[i].presence.total_attandance;
+                    row.innerHTML += "<td>" + total_attandance + "</td>";
+
+                    total_absence = data.data[i].presence.total_overtime;
+                    row.innerHTML += "<td>" + total_absence + "</td>";
+
+                    total_overtime = data.data[i].presence.total_absen;
+                    row.innerHTML += "<td>" + total_overtime + "</td>";
+
+                    category_name = data.data[i].category.category_name;
+                    row.innerHTML += "<td>" + category_name + "</td>";
+
+                    sallary = data.data[i].sallary;
+                    row.innerHTML += "<td>" + sallary + "</td>";
+
+                    report_date = data.data[i].report_date;
+                    row.innerHTML += "<td>" + report_date + "</td>";
+
+                    row.innerHTML += "<td>" + "<button type=\"button\" class=\"btn btn-light\" data-toggle=\"modal\" data-target=\"#payrollModals\" onclick=\"getPayrollByID(" + payroll_id + ")\">Update</button> <br> <button type=\"button\" class=\"btn btn-danger mt-3\" onclick=\"deletePayroll(" + payroll_id + ")\">Delete</button> " + "</td>";
+
+                    payrollList.appendChild(row);
+                }
+
+
+            }
+        };
+        xhr.open("GET", url, true);
+        xhr.send();
+    }
+
+    document.getElementById("payrollList").innerHTML = loadContent();
+
+    function countPayroll() {
+        var xhr = new XMLHttpRequest();
+        var url = "https://penabil-api.herokuapp.com/api/count-payroll";
+
+        var data = JSON.stringify({
+            employee_id: document.getElementById("field_employee_id").value,
+        });
+
+        console.log(document.getElementById("field_employee_id").value);
+
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.onload = function () {
+            var data = JSON.parse(this.responseText);
+            presence_id = data.presence_id;
+            category_id = data.category_id;
+            total_salary = data.total_salary;
+            employee_fname = data.employee.first_name;
+            employee_lname = data.employee.last_name;
+            var employee_name = employee_fname + " " + employee_lname;
+            document.getElementById("field_employee_name").value = employee_name;
+            document.getElementById("field_sallary").value = total_salary;
+
+            // var dates = new Date();
+            document.getElementById("field_report_date").value = formatDate();
+        };
+
+        xhr.send(data);
+        return false;
+    }
+
+    function formatDate() {
+        var d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    function postPayroll() {
+        var xhr = new XMLHttpRequest();
+        var url = "https://penabil-api.herokuapp.com/api/payroll";
+
+        var data = JSON.stringify({
+            employee_id: document.getElementById("field_employee_id").value,
+            presence_id: presence_id,
+            category_id: category_id,
+            sallary: document.getElementById("field_sallary").value,
+            report_date: document.getElementById("field_report_date").value
+        });
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.onload = function () {
+            console.log(this.responseText);
+        };
+
+        xhr.send(data);
+        return false;
+    }
+
+    function getPayrollByID(idPayroll) {
+        var xhr = new XMLHttpRequest();
+        var url = "https://penabil-api.herokuapp.com/api/payroll/" + idPayroll;
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var data = JSON.parse(this.responseText);
+
+                var employee_id = data.values[0].employee_id;
+                document.getElementById("field_employee_id").value = employee_id;
+
+                var employee_fname = data.values[0].employee.first_name;
+                var employee_lname = data.values[0].employee.last_name;
+                var employee_name = employee_fname + " " + employee_lname;
+                document.getElementById("field_employee_name").value = employee_name;
+
+                var salary = data.values[0].sallary;
+                document.getElementById("field_sallary").value = salary;
+
+                var report_date = data.values[0].report_date;
+                document.getElementById("field_report_date").value = report_date;
+
+                document.getElementById("btnSubmit").setAttribute("onclick", "updatePayroll(" + idPayroll + ")");
+                document.getElementById("btnSubmit").innerText = "Update Report";
+
+                presence_id = data.values[0].presence_id;
+                category_id = data.values[0].category_id;
+
+            }
+        };
+        xhr.open("GET", url, true);
+        xhr.send();
+    }
+
+    function updatePayroll(idPayroll) {
+        var xhr = new XMLHttpRequest();
+        var url = "https://penabil-api.herokuapp.com/api/payroll-update/" + idPayroll;
+
+        var data = JSON.stringify({
+            employee_id: document.getElementById("field_employee_id").value,
+            presence_id: presence_id,
+            category_id: category_id,
+            sallary: document.getElementById("field_sallary").value,
+            report_date: document.getElementById("field_report_date").value
+        });
+
+        xhr.open("PUT", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.onload = function () {
+            console.log(this.responseText);
+        };
+
+        xhr.send(data);
+        return false;
+    }
+
+    function deletePayroll(idPayroll) {
+        var xhr = new XMLHttpRequest();
+        var url = "https://penabil-api.herokuapp.com/api/payroll-delete/" + idPayroll;
+        xhr.onreadystatechange = function () {
+            console.log(this.responseText);
+        };
+        xhr.open("DELETE", url, true);
+        xhr.send();
+    }
+</script>
+
+</body>
+</html>

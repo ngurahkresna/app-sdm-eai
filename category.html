@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Category</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body onload="loadContent()">
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top"  style="background-color: #008B8B;">
+    <a class="navbar-brand" href="#" style="color: white;"><b>PENABIL</b></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 800px;">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="dashboard.html"style="color: white;"><b> Dashboard </b><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="employee.html"style="color: white;">Employees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Absence.html"style="color: white;">Absence</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="payroll.html"style="color: white;">Payroll</a>
+            </li>
+        </ul>
+    </div>
+</nav><br>
+
+
+<button type="button" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#mydaftar"><a href="#"><span></span>Add Category</a></button><br><br>
+<form method="POST" onsubmit="return sendData()">
+    <script>
+        function postCategory() {
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/category";
+
+            var data = JSON.stringify({
+                category_id: document.getElementById("category_id").value,
+                category_name: document.getElementById("category_name").value,
+                category_description: document.getElementById("category_description").value,
+                category_salary: document.getElementById("category_salary").value,
+                overtime_salary: document.getElementById("overtime_salary").value
+            });
+
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                console.log (this.responseText);
+            };
+
+            xhr.send(data);
+            return false;
+        }
+    </script>
+    <!-- Modal daftar -->
+    <div id="mydaftar" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Category ID</label>
+                            <input type="text" class="form-control" id="category_id" placeholder="Category ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Catgeory Name</label>
+                            <input type="text" class="form-control" id="category_name" placeholder="Catgeory Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Category Description</label>
+                            <input type="text" class="form-control" id="category_description" placeholder="Category Description">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Category Salary</label>
+                            <input type="text" class="form-control" id="category_salary" placeholder="Category Salary">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Overtime Salary</label>
+                            <input type="text" class="form-control" id="overtime_salary" placeholder="Overtime Salary">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="postCategory()">Daftar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal daftar -->
+
+    <script>
+        function loadContent(){
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/category";
+            xhr.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    // document.getElementById("hasil").innerHTML = this.responseText;
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].category_id;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#categoryid-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].category_name;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#categoryname-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].category_description;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#categorydescription-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].category_salary;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#categorysalary-'+(i+1)).html(name);
+                    }
+
+                    var data = JSON.parse(this.responseText);
+                    for (var i=0; i<data.data.length; i++) {
+                        name = data.data[i].overtime_salary;
+                        console.log(name);
+                        var tag = $('#table');
+                        tag.find('#overtimesalary-'+(i+1)).html(name);
+                    }
+                }
+            };
+            xhr.open("GET", url, true);
+            xhr.send();
+        }
+    </script>
+    </div>
+    <br>
+
+    <center>
+        <table id="table" class="table1">
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Category Description</th>
+                <th>Category Salary</th>
+                <th>Overtime Salry</th>
+                <th>Opsi</th>
+            </tr>
+
+            <!-- Row 1 -->
+
+            <tr>
+                <td id="categoryid-1"></td>
+                <td id="categoryname-1"></td>
+                <td id="categorydescription-1"></td>
+                <td id="categorysalary-1"></td>
+                <td id="overtimesalary-1"></td>
+
+                <td><button type="button" onclick="getContentc()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#updatec"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putCategory()">
+                        <script>
+                            function getContentc(){
+                                var id = document.getElementById("categoryid-1").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        var categoryid = data.values[0].category_id;
+                                        var categoryname = data.values[0].category_name;
+                                        var categorydescription = data.values[0].category_description;
+                                        var categorysalary = data.values[0].category_salary;
+                                        var overtimesalary = data.values[0].overtime_salary;
+
+
+                                        document.getElementById("category_id1").value = categoryid;
+                                        document.getElementById("category_name1").value = categoryname;
+                                        document.getElementById("category_description1").value = categorydescription;
+                                        document.getElementById("category_salary1").value = categorysalary;
+                                        document.getElementById("overtime_salary1").value = overtimesalary;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putCategory() {
+                                var id = document.getElementById("category_id1").value;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_name: document.getElementById("category_name1").value,
+                                    category_description: document.getElementById("category_description1").value,
+                                    category_salary: document.getElementById("category_salary1").value,
+                                    overtime_salary : document.getElementById("overtime_salary1").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteCategory() {
+                                var id = document.getElementById("categoryid-1").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="updatec" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category ID</label>
+                                                <input type="text" class="form-control" id="category_id1" placeholder="Category ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Catgeory Name</label>
+                                                <input type="text" class="form-control" id="category_name1" placeholder="Catgeory Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Description</label>
+                                                <input type="text" class="form-control" id="category_description1" placeholder="Category Description">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Salary</label>
+                                                <input type="text" class="form-control" id="category_salary1" placeholder="Category Salary">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Overtime Salary</label>
+                                                <input type="text" class="form-control" id="overtime_salary1" placeholder="Overtime Salary">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putCategory()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteCategory()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 2 -->
+
+            <tr>
+                <td id="categoryid-2"></td>
+                <td id="categoryname-2"></td>
+                <td id="categorydescription-2"></td>
+                <td id="categorysalary-2"></td>
+                <td id="overtimesalary-2"></td>
+
+                <td><button type="button" onclick="getContentc1()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#updatec1"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putCategory1()">
+                        <script>
+                            function getContentc1(){
+                                var id = document.getElementById("categoryid-2").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        var categoryid = data.values[0].category_id;
+                                        var categoryname = data.values[0].category_name;
+                                        var categorydescription = data.values[0].category_description;
+                                        var categorysalary = data.values[0].category_salary;
+                                        var overtimesalary = data.values[0].overtime_salary;
+
+
+                                        document.getElementById("category_id2").value = categoryid;
+                                        document.getElementById("category_name2").value = categoryname;
+                                        document.getElementById("category_description2").value = categorydescription;
+                                        document.getElementById("category_salary2").value = categorysalary;
+                                        document.getElementById("overtime_salary2").value = overtimesalary;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putCategory1() {
+                                var id = document.getElementById("category_id2").value;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_name: document.getElementById("category_name2").value,
+                                    category_description: document.getElementById("category_description2").value,
+                                    category_salary: document.getElementById("category_salary2").value,
+                                    overtime_salary : document.getElementById("overtime_salary2").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteCategory1() {
+                                var id = document.getElementById("categoryid-2").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="updatec1" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category ID</label>
+                                                <input type="text" class="form-control" id="category_id2" placeholder="Category ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Catgeory Name</label>
+                                                <input type="text" class="form-control" id="category_name2" placeholder="Catgeory Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Description</label>
+                                                <input type="text" class="form-control" id="category_description2" placeholder="Category Description">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Salary</label>
+                                                <input type="text" class="form-control" id="category_salary2" placeholder="Category Salary">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Overtime Salary</label>
+                                                <input type="text" class="form-control" id="overtime_salary2" placeholder="Overtime Salary">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putCategory1()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteCategory1()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 3 -->
+
+            <tr>
+                <td id="categoryid-3"></td>
+                <td id="categoryname-3"></td>
+                <td id="categorydescription-3"></td>
+                <td id="categorysalary-3"></td>
+                <td id="overtimesalary-3"></td>
+
+                <td><button type="button" onclick="getContentc2()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#updatec2"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putCategory2()">
+                        <script>
+                            function getContentc2(){
+                                var id = document.getElementById("categoryid-3").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        var categoryid = data.values[0].category_id;
+                                        var categoryname = data.values[0].category_name;
+                                        var categorydescription = data.values[0].category_description;
+                                        var categorysalary = data.values[0].category_salary;
+                                        var overtimesalary = data.values[0].overtime_salary;
+
+
+                                        document.getElementById("category_id3").value = categoryid;
+                                        document.getElementById("category_name3").value = categoryname;
+                                        document.getElementById("category_description3").value = categorydescription;
+                                        document.getElementById("category_salary3").value = categorysalary;
+                                        document.getElementById("overtime_salary3").value = overtimesalary;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putCategory2() {
+                                var id = document.getElementById("category_id3").value;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_name: document.getElementById("category_name3").value,
+                                    category_description: document.getElementById("category_description3").value,
+                                    category_salary: document.getElementById("category_salary3").value,
+                                    overtime_salary : document.getElementById("overtime_salary3").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteCategory2() {
+                                var id = document.getElementById("categoryid-3").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="updatec2" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category ID</label>
+                                                <input type="text" class="form-control" id="category_id3" placeholder="Category ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Catgeory Name</label>
+                                                <input type="text" class="form-control" id="category_name3" placeholder="Catgeory Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Description</label>
+                                                <input type="text" class="form-control" id="category_description3" placeholder="Category Description">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Salary</label>
+                                                <input type="text" class="form-control" id="category_salary3" placeholder="Category Salary">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Overtime Salary</label>
+                                                <input type="text" class="form-control" id="overtime_salary3" placeholder="Overtime Salary">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putCategory2()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteCategory2()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 4 -->
+
+            <tr>
+                <td id="categoryid-4"></td>
+                <td id="categoryname-4"></td>
+                <td id="categorydescription-4"></td>
+                <td id="categorysalary-4"></td>
+                <td id="overtimesalary-4"></td>
+
+                <td><button type="button" onclick="getContentc3()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#updatec3"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putCategory3()">
+                        <script>
+                            function getContentc3(){
+                                var id = document.getElementById("categoryid-4").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        var categoryid = data.values[0].category_id;
+                                        var categoryname = data.values[0].category_name;
+                                        var categorydescription = data.values[0].category_description;
+                                        var categorysalary = data.values[0].category_salary;
+                                        var overtimesalary = data.values[0].overtime_salary;
+
+
+                                        document.getElementById("category_id4").value = categoryid;
+                                        document.getElementById("category_name4").value = categoryname;
+                                        document.getElementById("category_description4").value = categorydescription;
+                                        document.getElementById("category_salary4").value = categorysalary;
+                                        document.getElementById("overtime_salary4").value = overtimesalary;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putCategory3() {
+                                var id = document.getElementById("category_id4").value;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_name: document.getElementById("category_name4").value,
+                                    category_description: document.getElementById("category_description4").value,
+                                    category_salary: document.getElementById("category_salary4").value,
+                                    overtime_salary : document.getElementById("overtime_salary4").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteCategory3() {
+                                var id = document.getElementById("categoryid-4").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="updatec3" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category ID</label>
+                                                <input type="text" class="form-control" id="category_id4" placeholder="Category ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Catgeory Name</label>
+                                                <input type="text" class="form-control" id="category_name4" placeholder="Catgeory Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Description</label>
+                                                <input type="text" class="form-control" id="category_description4" placeholder="Category Description">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Salary</label>
+                                                <input type="text" class="form-control" id="category_salary4" placeholder="Category Salary">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Overtime Salary</label>
+                                                <input type="text" class="form-control" id="overtime_salary4" placeholder="Overtime Salary">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putCategory3()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteCategory3()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Row 5-->
+
+            <tr>
+                <td id="categoryid-5"></td>
+                <td id="categoryname-5"></td>
+                <td id="categorydescription-5"></td>
+                <td id="categorysalary-5"></td>
+                <td id="overtimesalary-5"></td>
+
+                <td><button type="button" onclick="getContentc4()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#updatec4"><a href="#"><span></span>Update</a></button><br><br>
+                    <form method="PUT" onsubmit="return putCategory4()">
+                        <script>
+                            function getContentc4(){
+                                var id = document.getElementById("categoryid-5").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category/"+id;
+                                xhr.onreadystatechange = function(){
+                                    if(this.readyState === 4 && this.status === 200){
+                                        var data = JSON.parse(this.responseText);
+                                        var categoryid = data.values[0].category_id;
+                                        var categoryname = data.values[0].category_name;
+                                        var categorydescription = data.values[0].category_description;
+                                        var categorysalary = data.values[0].category_salary;
+                                        var overtimesalary = data.values[0].overtime_salary;
+
+
+                                        document.getElementById("category_id5").value = categoryid;
+                                        document.getElementById("category_name5").value = categoryname;
+                                        document.getElementById("category_description5").value = categorydescription;
+                                        document.getElementById("category_salary5").value = categorysalary;
+                                        document.getElementById("overtime_salary5").value = overtimesalary;
+                                    }
+                                };
+
+                                xhr.open("GET", url, true);
+                                xhr.send();
+                            }
+
+                            function putCategory4() {
+                                var id = document.getElementById("category_id5").value;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-update/"+id;
+
+                                var data = JSON.stringify({
+                                    category_name: document.getElementById("category_name5").value,
+                                    category_description: document.getElementById("category_description5").value,
+                                    category_salary: document.getElementById("category_salary5").value,
+                                    overtime_salary : document.getElementById("overtime_salary5").value,
+                                });
+
+                                xhr.open("PUT", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+
+                                xhr.send(data);
+                                return false;
+                            }
+
+                            function deleteCategory4() {
+                                var id = document.getElementById("categoryid-5").innerHTML;
+                                var xhr = new XMLHttpRequest();
+                                var url = "https://penabil-api.herokuapp.com/api/category-delete/"+id;
+
+                                xhr.open("DELETE", url, true);
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                                xhr.onload = function () {
+                                    console.log (this.responseText);
+                                };
+                                xhr.send();
+                                return false;
+                            }
+                        </script>
+
+                        <!-- Modal daftar -->
+                        <div id="updatec4" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category ID</label>
+                                                <input type="text" class="form-control" id="category_id5" placeholder="Category ID">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Catgeory Name</label>
+                                                <input type="text" class="form-control" id="category_name5" placeholder="Catgeory Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Description</label>
+                                                <input type="text" class="form-control" id="category_description5" placeholder="Category Description">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Category Salary</label>
+                                                <input type="text" class="form-control" id="category_salary5" placeholder="Category Salary">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Overtime Salary</label>
+                                                <input type="text" class="form-control" id="overtime_salary5" placeholder="Overtime Salary">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putCategory4()">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end modal daftar -->
+                        <button type="button" onclick="deleteCategory4()" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+
+
+        </table>
+    </center>
+
+</body>
+</html>

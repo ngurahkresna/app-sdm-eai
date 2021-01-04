@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Claim Reimbursement</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body onload="loadContent()">
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top"  style="background-color: #008B8B;">
+    <a class="navbar-brand" href="#" style="color: white;"><b>PENABIL</b></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 800px;">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="dashboard.html"style="color: white;"><b> Dashboard </b><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="employee.html"style="color: white;">Employees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Absence.html"style="color: white;">Absence</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="payroll.html"style="color: white;">Payroll</a>
+            </li>
+        </ul>
+    </div>
+</nav><br>
+
+
+<button type="button" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#mydaftar"><a href="#"><span></span>Add Reimbursement</a></button><br><br>
+<form method="POST" onsubmit="return sendData()">
+    <script>
+        function postReimbursement() {
+            var xhr = new XMLHttpRequest();
+            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement";
+
+            var data = JSON.stringify({
+                employee_id: document.getElementById("employee_id").value,
+                title: document.getElementById("title").value,
+                description: document.getElementById("description").value,
+                proff_of_payment : document.getElementById("payment").value,
+                date: document.getElementById("date").value
+            });
+
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                console.log (this.responseText);
+            };
+
+            xhr.send(data);
+            return false;
+        }
+    </script>
+
+    <!-- Modal daftar -->
+    <div id="mydaftar" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Employee ID</label>
+                            <input type="text" class="form-control" id="employee_id" placeholder="Employee ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Title</label>
+                            <input type="text" class="form-control" id="title" placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Description</label>
+                            <input type="email" class="form-control" id="description" placeholder="Description">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Payment</label>
+                            <input type="text" class="form-control" id="payment" placeholder="Payment">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Date</label>
+                            <input type="text" class="form-control" id="date" placeholder="Date">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="postReimbursement()">Tambah Claim Reimbursement</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal daftar -->
+</form>
+
+<script>
+    function loadContent(){
+        var xhr = new XMLHttpRequest();
+        var url = "https://penabil-api.herokuapp.com/api/claimreimbursement";
+        xhr.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                // document.getElementById("hasil").innerHTML = this.responseText;
+
+                var data = JSON.parse(this.responseText);
+                for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].claim_id;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#claimid-'+(i+1)).html(name);
+                }
+
+                var data = JSON.parse(this.responseText);
+                for (var i=0; i<data.data.length; i++) {
+                    fname = data.data[i].employee.first_name;
+                    lname = data.data[i].employee.last_name;
+                    var tag = $('#table');
+                    tag.find('#employeeid-'+(i+1)).html(fname+ " " +lname);
+                }
+
+                var data = JSON.parse(this.responseText);
+                for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].title;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#title-'+(i+1)).html(name);
+                }
+
+                var data = JSON.parse(this.responseText);
+                for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].description;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#description-'+(i+1)).html(name);
+                }
+
+                var data = JSON.parse(this.responseText);
+                for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].proff_of_payment;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#payment-'+(i+1)).html(name);
+                }
+
+                var data = JSON.parse(this.responseText);
+                for (var i=0; i<data.data.length; i++) {
+                    name = data.data[i].date;
+                    console.log(name);
+                    var tag = $('#table');
+                    tag.find('#date-'+(i+1)).html(name);
+                }
+            }
+        };
+        xhr.open("GET", url, true);
+        xhr.send();
+    }
+</script>
+</div>
+<br>
+
+<center>
+    <table id="table" class="table1">
+        <tr>
+            <th>Claim ID</th>
+            <th>Employee Name</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Payment</th>
+            <th>Date</th>
+            <th>Opsi</th>
+        </tr>
+
+        <!-- table row 1 -->
+
+        <tr>
+            <td id="claimid-1"></td>
+            <td id="employeeid-1"></td>
+            <td id="title-1"></td>
+            <td id="description-1"></td>
+            <td id="payment-1"></td>
+            <td id="date-1"></td>
+
+            <td><button type="button" onclick="getContent()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update"><a href="#"><span></span>Update</a></button><br><br>
+                <form method="PUT" onsubmit="return putReimbursement()">
+                    <script>
+                        var claim_id = 0;
+                        var employee_id = 0;
+                        function getContent(){
+                            var id = document.getElementById("claimid-1").innerHTML;
+                            console.log("claimid"+ id);
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement/"+id;
+                            xhr.onreadystatechange = function(){
+                                if(this.readyState === 4 && this.status === 200){
+                                    var data = JSON.parse(this.responseText);
+                                    claim_id = data.values[0].claim_id;
+                                    var fname = data.values[0].employee.first_name;
+                                    var lname = data.values[0].employee.last_name;
+                                    var employee_name = fname + " " + lname;
+                                    employee_id = data.values[0].employee_id;
+                                    var title = data.values[0].title;
+                                    var description = data.values[0].description;
+                                    var payment = data.values[0].proff_of_payment;
+                                    var date = data.values[0].date;
+
+                                    document.getElementById("employee_name1").value = employee_name;
+                                    document.getElementById("title1").value = title;
+                                    document.getElementById("description1").value = description;
+                                    document.getElementById("payment1").value = payment;
+                                    document.getElementById("date1").value = date;
+                                }
+                            };
+
+                            xhr.open("GET", url, true);
+                            xhr.send();
+                        }
+
+                        function putReimbursement() {
+                            var id = claim_id;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-update/"+id;
+
+                            var data = JSON.stringify({
+                                employee_id: employee_id,
+                                title: document.getElementById("title1").value,
+                                description: document.getElementById("description1").value,
+                                proff_of_payment : document.getElementById("payment1").value,
+                                date: document.getElementById("date1").value
+                            });
+
+                            xhr.open("PUT", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+
+                            xhr.send(data);
+                            return false;
+                        }
+
+                        function deleteReimbursement() {
+                            var id = document.getElementById("claimid-1").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-delete/"+id;
+
+                            xhr.open("DELETE", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+                            xhr.send();
+                            return false;
+                        }
+                    </script>
+
+                    <!-- Modal daftar -->
+                    <div id="update" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Employee ID</label>
+                                            <input type="text" class="form-control" id="employee_name1" placeholder="Employee ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Title</label>
+                                            <input type="text" class="form-control" id="title1" placeholder="Title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Description</label>
+                                            <input type="email" class="form-control" id="description1" placeholder="Description">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Payment</label>
+                                            <input type="text" class="form-control" id="payment1" placeholder="Payment">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Date</label>
+                                            <input type="text" class="form-control" id="date1" placeholder="Date">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putReimbursement()">Update</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end modal daftar -->
+                </form>
+                <button type="button" onclick="deleteReimbursement()" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+
+        <!-- table row 2 -->
+
+        <tr>
+            <td id="claimid-2"></td>
+            <td id="employeeid-2"></td>
+            <td id="title-2"></td>
+            <td id="description-2"></td>
+            <td id="payment-2"></td>
+            <td id="date-2"></td>
+
+            <td><button type="button" onclick="getContent1()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update1"><a href="#"><span></span>Update</a></button><br><br>
+                <form method="PUT" onsubmit="return putReimbursement1()">
+                    <script>
+                        var claim_id = 0;
+                        var employee_id = 0;
+                        function getContent1(){
+                            var id = document.getElementById("claimid-2").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement/"+id;
+                            xhr.onreadystatechange = function(){
+                                if(this.readyState === 4 && this.status === 200){
+                                    var data = JSON.parse(this.responseText);
+                                    claim_id = data.values[0].claim_id;
+                                    var fname = data.values[0].employee.first_name;
+                                    var lname = data.values[0].employee.last_name;
+                                    var employee_name = fname + " " + lname;
+                                    employee_id = data.values[0].employee_id;
+                                    var title = data.values[0].title;
+                                    var description = data.values[0].description;
+                                    var payment = data.values[0].proff_of_payment;
+                                    var date = data.values[0].date;
+
+                                    document.getElementById("employee_name2").value = employee_name;
+                                    document.getElementById("title2").value = title;
+                                    document.getElementById("description2").value = description;
+                                    document.getElementById("payment2").value = payment;
+                                    document.getElementById("date2").value = date;
+                                }
+                            };
+
+                            xhr.open("GET", url, true);
+                            xhr.send();
+                        }
+
+                        function putReimbursement1() {
+                            var id = claim_id;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-update/"+id;
+
+                            var data = JSON.stringify({
+                                employee_id: employee_id,
+                                title: document.getElementById("title2").value,
+                                description: document.getElementById("description2").value,
+                                proff_of_payment : document.getElementById("payment2").value,
+                                date: document.getElementById("date2").value
+                            });
+
+                            xhr.open("PUT", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+
+                            xhr.send(data);
+                            return false;
+                        }
+
+                        function deleteReimbursement1() {
+                            var id = document.getElementById("claimid-2").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-delete/"+id;
+
+                            xhr.open("DELETE", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+                            xhr.send();
+                            return false;
+                        }
+                    </script>
+
+                    <!-- Modal daftar -->
+                    <div id="update1" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Employee ID</label>
+                                            <input type="text" class="form-control" id="employee_name2" placeholder="Employee ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Title</label>
+                                            <input type="text" class="form-control" id="title2" placeholder="Title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Description</label>
+                                            <input type="email" class="form-control" id="description2" placeholder="Description">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Payment</label>
+                                            <input type="text" class="form-control" id="payment2" placeholder="Payment">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Date</label>
+                                            <input type="text" class="form-control" id="date2" placeholder="Date">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putReimbursement1()">Update</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end modal daftar -->
+                </form>
+                <button type="button" onclick="deleteReimbursement1()" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+
+        <!-- table row 3 -->
+
+        <tr>
+            <td id="claimid-3"></td>
+            <td id="employeeid-3"></td>
+            <td id="title-3"></td>
+            <td id="description-3"></td>
+            <td id="payment-3"></td>
+            <td id="date-3"></td>
+
+            <td><button type="button" onclick="getContent2()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update2"><a href="#"><span></span>Update</a></button><br><br>
+                <form method="PUT" onsubmit="return putReimbursement2()">
+                    <script>
+                        var claim_id = 0;
+                        var employee_id = 0;
+                        function getContent2(){
+                            var id = document.getElementById("claimid-3").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement/"+id;
+                            xhr.onreadystatechange = function(){
+                                if(this.readyState === 4 && this.status === 200){
+                                    var data = JSON.parse(this.responseText);
+                                    claim_id = data.values[0].claim_id;
+                                    var fname = data.values[0].employee.first_name;
+                                    var lname = data.values[0].employee.last_name;
+                                    var employee_name = fname + " " + lname;
+                                    employee_id = data.values[0].employee_id;
+                                    var title = data.values[0].title;
+                                    var description = data.values[0].description;
+                                    var payment = data.values[0].proff_of_payment;
+                                    var date = data.values[0].date;
+
+                                    document.getElementById("employee_name3").value = employee_name;
+                                    document.getElementById("title3").value = title;
+                                    document.getElementById("description3").value = description;
+                                    document.getElementById("payment3").value = payment;
+                                    document.getElementById("date3").value = date;
+                                }
+                            };
+
+                            xhr.open("GET", url, true);
+                            xhr.send();
+                        }
+
+                        function putReimbursement2() {
+                            var id = claim_id;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-update/"+id;
+
+                            var data = JSON.stringify({
+                                employee_id: employee_id,
+                                title: document.getElementById("title3").value,
+                                description: document.getElementById("description3").value,
+                                proff_of_payment : document.getElementById("payment3").value,
+                                date: document.getElementById("date3").value
+                            });
+
+                            xhr.open("PUT", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+
+                            xhr.send(data);
+                            return false;
+                        }
+
+                        function deleteReimbursement2() {
+                            var id = document.getElementById("claimid-3").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-delete/"+id;
+
+                            xhr.open("DELETE", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+                            xhr.send();
+                            return false;
+                        }
+                    </script>
+
+                    <!-- Modal daftar -->
+                    <div id="update2" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Employee Name</label>
+                                            <input type="text" class="form-control" id="employee_name3" placeholder="Employee ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Title</label>
+                                            <input type="text" class="form-control" id="title3" placeholder="Title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Description</label>
+                                            <input type="email" class="form-control" id="description3" placeholder="Description">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Payment</label>
+                                            <input type="text" class="form-control" id="payment3" placeholder="Payment">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Date</label>
+                                            <input type="text" class="form-control" id="date3" placeholder="Date">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putReimbursement2()">Update</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end modal daftar -->
+                </form>
+                <button type="button" onclick="deleteReimbursement2()" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+
+        <!-- table row 4 -->
+
+        <tr>
+            <td id="claimid-4"></td>
+            <td id="employeeid-4"></td>
+            <td id="title-4"></td>
+            <td id="description-4"></td>
+            <td id="payment-4"></td>
+            <td id="date-4"></td>
+
+            <td><button type="button" onclick="getContent3()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update4"><a href="#"><span></span>Update</a></button><br><br>
+                <form method="PUT" onsubmit="return putReimbursement3()">
+                    <script>
+                        var claim_id = 0;
+                        var employee_id = 0;
+                        function getContent3(){
+                            var id = document.getElementById("claimid-4").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement/"+id;
+                            xhr.onreadystatechange = function(){
+                                if(this.readyState === 4 && this.status === 200){
+                                    var data = JSON.parse(this.responseText);
+                                    claim_id = data.values[0].claim_id;
+                                    var fname = data.values[0].employee.first_name;
+                                    var lname = data.values[0].employee.last_name;
+                                    var employee_name = fname + " " + lname;
+                                    employee_id = data.values[0].employee_id;
+                                    var title = data.values[0].title;
+                                    var description = data.values[0].description;
+                                    var payment = data.values[0].proff_of_payment;
+                                    var date = data.values[0].date;
+
+                                    document.getElementById("employee_name4").value = employee_name;
+                                    document.getElementById("title4").value = title;
+                                    document.getElementById("description4").value = description;
+                                    document.getElementById("payment4").value = payment;
+                                    document.getElementById("date4").value = date;
+                                }
+                            };
+
+                            xhr.open("GET", url, true);
+                            xhr.send();
+                        }
+
+                        function putReimbursement3() {
+                            var id = claim_id;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-update/"+id;
+
+                            var data = JSON.stringify({
+                                employee_id: employee_id,
+                                title: document.getElementById("title4").value,
+                                description: document.getElementById("description4").value,
+                                proff_of_payment : document.getElementById("payment4").value,
+                                date: document.getElementById("date4").value
+                            });
+
+                            xhr.open("PUT", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+
+                            xhr.send(data);
+                            return false;
+                        }
+
+                        function deleteReimbursement3() {
+                            var id = document.getElementById("claimid-4").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-delete/"+id;
+
+                            xhr.open("DELETE", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+                            xhr.send();
+                            return false;
+                        }
+                    </script>
+
+                    <!-- Modal daftar -->
+                    <div id="update4" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Employee Name</label>
+                                            <input type="text" class="form-control" id="employee_name4" placeholder="Employee ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Title</label>
+                                            <input type="text" class="form-control" id="title4" placeholder="Title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Description</label>
+                                            <input type="email" class="form-control" id="description4" placeholder="Description">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Payment</label>
+                                            <input type="text" class="form-control" id="payment4" placeholder="Payment">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Date</label>
+                                            <input type="text" class="form-control" id="date4" placeholder="Date">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putReimbursement3()">Update</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end modal daftar -->
+                </form>
+                <button type="button" onclick="deleteReimbursement3()" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+
+        <!-- table row 5 -->
+
+        <tr>
+            <td id="claimid-5"></td>
+            <td id="employeeid-5"></td>
+            <td id="title-5"></td>
+            <td id="description-5"></td>
+            <td id="payment-5"></td>
+            <td id="date-5"></td>
+
+            <td><button type="button" onclick="getContent4()" class="btn btn-light" style="margin-left: 10px;"><li data-toggle="modal" data-target="#update5"><a href="#"><span></span>Update</a></button><br><br>
+                <form method="PUT" onsubmit="return putReimbursement4()">
+                    <script>
+                        var claim_id = 0;
+                        var employee_id = 0;
+                        function getContent4(){
+                            var id = document.getElementById("claimid-5").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement/"+id;
+                            xhr.onreadystatechange = function(){
+                                if(this.readyState === 4 && this.status === 200){
+                                    var data = JSON.parse(this.responseText);
+                                    claim_id = data.values[0].claim_id;
+                                    var fname = data.values[0].employee.first_name;
+                                    var lname = data.values[0].employee.last_name;
+                                    var employee_name = fname + " " + lname;
+                                    employee_id = data.values[0].employee_id;
+                                    var title = data.values[0].title;
+                                    var description = data.values[0].description;
+                                    var payment = data.values[0].proff_of_payment;
+                                    var date = data.values[0].date;
+
+                                    document.getElementById("employee_name5").value = employee_name;
+                                    document.getElementById("title5").value = title;
+                                    document.getElementById("description5").value = description;
+                                    document.getElementById("payment5").value = payment;
+                                    document.getElementById("date5").value = date;
+                                }
+                            };
+
+                            xhr.open("GET", url, true);
+                            xhr.send();
+                        }
+
+                        function putReimbursement4() {
+                            var id = claim_id;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-update/"+id;
+
+                            var data = JSON.stringify({
+                                employee_id: employee_id,
+                                title: document.getElementById("title5").value,
+                                description: document.getElementById("description5").value,
+                                proff_of_payment : document.getElementById("payment5").value,
+                                date: document.getElementById("date5").value
+                            });
+
+                            xhr.open("PUT", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+
+                            xhr.send(data);
+                            return false;
+                        }
+
+                        function deleteReimbursement4() {
+                            var id = document.getElementById("claimid-5").innerHTML;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://penabil-api.herokuapp.com/api/claimreimbursement-delete/"+id;
+
+                            xhr.open("DELETE", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr.onload = function () {
+                                console.log (this.responseText);
+                            };
+                            xhr.send();
+                            return false;
+                        }
+                    </script>
+
+                    <!-- Modal daftar -->
+                    <div id="update5" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Employee Name</label>
+                                            <input type="text" class="form-control" id="employee_name5" placeholder="Employee ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Title</label>
+                                            <input type="text" class="form-control" id="title5" placeholder="Title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Description</label>
+                                            <input type="email" class="form-control" id="description5" placeholder="Description">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Payment</label>
+                                            <input type="text" class="form-control" id="payment5" placeholder="Payment">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Date</label>
+                                            <input type="text" class="form-control" id="date5" placeholder="Date">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="putReimbursement4()">Update</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end modal daftar -->
+                </form>
+                <button type="button" onclick="deleteReimbursement4()" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+    </table>
+</center>
+
+</body>
+</html>
